@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private Button createBtn;
     private ImageView imgQr;
     private Button photoBtn;
-    private static final int ScanQrCode=222;//扫描二维码
+    private static final int ScanQrCode=222;    //扫描二维码
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +52,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPermissions() {
-        //判断是否在Android11上
-        if (Build.VERSION.SDK_INT == 30) {
-            XXPermissions.with(this)
-                    // 申请拍照和存储权限
+        /**
+         * 判断是否在 Android11 上的权限
+         */
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
+            XXPermissions.with(this)// 申请拍照和存储权限
                     .permission(Permission.CAMERA,Permission.MANAGE_EXTERNAL_STORAGE)
                     .request(new OnPermission() {
                         @Override
                         public void hasPermission(List<String> granted, boolean all) {
                             if (all) {
-                                Toast.makeText(MainActivity.this, "获取权限成功", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(MainActivity.this, "获取权限成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(MainActivity.this, "获取部分权限成功，但部分权限未正常授予", Toast.LENGTH_SHORT).show();
                             }
@@ -153,6 +154,12 @@ public class MainActivity extends AppCompatActivity {
 }
 
 
+    //扫描二维码
+    private void  scanQrCode(){
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+        startActivityForResult(intent, ScanQrCode);
+    }
+
     //生成不带图片的二维码
     private void  createQrCode(String content){
         //参数 1.生成内容 2.宽度 3.
@@ -166,12 +173,8 @@ public class MainActivity extends AppCompatActivity {
         imgQr.setImageBitmap(image);
     }
 
-    //扫描二维码
-    private void  scanQrCode(){
-        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-        startActivityForResult(intent, ScanQrCode);
-    }
 
+    //数据回调
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
